@@ -1,0 +1,31 @@
+#!/bin/bash
+set -o nounset
+set -o errexit
+set -o pipefail
+
+team_alias="fti"
+project_alias="xz"
+
+exceptions="data-autotab data-int data-pinfo data-sheet-title data-value"
+
+attr_matching=$(grep -E -H -n "data-[a-z0-9\-]+" ./*[!.sh] | grep -E -v "data-$team_alias-$project_alias-[a-z0-9\-]+")
+
+contains() {
+  [[ " $1 " =~ " $2 " ]] && echo 1 || echo 0
+}
+
+attr_filtered=()
+while IFS= read -r attr_line
+do
+  trimmed_attrs=$(echo "$attr_line" | grep -E -o "data-[a-z0-9\-]+")
+  while IFS= read -r attr
+  do
+    if [[ $(contains "$exceptions" "$attr") -eq "0" ]]; then
+      attr_filtered+=( "$attr" )
+      attr_file=$(echo "$attr_line" | cut -d ":" -f 1)
+      attr_line_number=$(echo "$attr_line" | cut -d ":" -f 2)
+      attr_full_line=$(echo "$attr_line" | cut -d ":" -f 3)
+      echo -e "::error file=$attr_file,line=$attr_line_number::Illegal attribute '$attr'.\n$(echo $attr_full_line | xargs)\n"
+    fi
+  done < <(printf '%b\n' "$trimmed_attrs") 
+done < <(printf '%b\n' "$attr_matching")

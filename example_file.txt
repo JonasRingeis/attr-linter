@@ -1,0 +1,6 @@
+<div data-attr-1="blablah" test-id="some-id">
+	<div data-attr-xy="haha" data-flag-a11y></div>
+	<div data-fti-xz-attr="haha" data-fti-xz-flag></div>
+	<div data-some-attr="yes" data-fti-ab-attr="123"></div>
+	<div data-value="1" />
+</div>
