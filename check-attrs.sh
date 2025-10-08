@@ -8,7 +8,20 @@ project_alias="xz"
 
 exceptions="data-autotab data-int data-pinfo data-sheet-title data-value"
 
-attr_matching=$(grep -E -H -n "data-[a-z0-9\-]+" ./*[!.sh] | grep -E -v "data-$team_alias-$project_alias-[a-z0-9\-]+")
+attr_matching=$(grep -EHnr \
+  --exclude-dir='node_modules' \
+  --exclude-dir="build" \
+  --exclude-dir="cdk.out" \
+  --exclude-dir="dist" \
+  --exclude-dir=".git" \
+  --exclude-dir="playwright-report" \
+  --exclude-dir="coverage/" \
+  --exclude-dir="test-report" \
+  --exclude-dir="*snapshots*" \
+  --exclude="*.json" \
+  --exclude="tsconfig.tsbuildinfo" \
+  --exclude="*.svg" \
+  "data-[a-z0-9\-]+" ./*[!.sh] | grep -E -v "data-$team_alias-$project_alias-[a-z0-9\-]+")
 
 contains() {
   [[ " $1 " =~ " $2 " ]] && echo 1 || echo 0
