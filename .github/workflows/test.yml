@@ -1,0 +1,11 @@
+on:
+    push:
+        branches: [ "main" ]
+    workflow_dispatch:
+
+jobs:
+  lint-attrs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: ./check-attrs.sh
