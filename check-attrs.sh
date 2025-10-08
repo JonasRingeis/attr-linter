@@ -23,6 +23,7 @@ do
     if [[ $(contains "$exceptions" "$attr") -eq "0" ]]; then
       attr_filtered+=( "$attr" )
       attr_file=$(echo "$attr_line" | cut -d ":" -f 1)
+      attr_file=${attr_file#"./"}
       attr_line_number=$(echo "$attr_line" | cut -d ":" -f 2)
       attr_full_line=$(echo "$attr_line" | cut -d ":" -f 3)
       echo -e "::error file=$attr_file,line=$attr_line_number::Illegal attribute '$attr' in file '$attr_file' at line $attr_line_number.\n$(echo $attr_full_line | xargs)\n"
