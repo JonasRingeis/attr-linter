@@ -14,14 +14,12 @@ contains() {
   [[ " $1 " =~ " $2 " ]] && echo 1 || echo 0
 }
 
-attr_filtered=()
 while IFS= read -r attr_line
 do
   trimmed_attrs=$(echo "$attr_line" | grep -E -o "data-[a-z0-9\-]+")
   while IFS= read -r attr
   do
     if [[ $(contains "$exceptions" "$attr") -eq "0" ]]; then
-      attr_filtered+=( "$attr" )
       attr_file=$(echo "$attr_line" | cut -d ":" -f 1)
       attr_file=${attr_file#"./"}
       attr_line_number=$(echo "$attr_line" | cut -d ":" -f 2)
