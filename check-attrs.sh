@@ -5,10 +5,12 @@ set -o pipefail
 
 team_alias="fti"
 project_alias="xz"
+template_pattern="*.twig"
 
 exceptions="data-autotab data-int data-pinfo data-sheet-title data-value"
 
 attr_matching=$(grep -EHnr \
+  --include=$template_pattern \
   --exclude-dir='node_modules' \
   --exclude-dir="build" \
   --exclude-dir="cdk.out" \
@@ -37,7 +39,11 @@ do
       attr_file=${attr_file#"./"}
       attr_line_number=$(echo "$attr_line" | cut -d ":" -f 2)
       attr_full_line=$(echo "$attr_line" | cut -d ":" -f 3)
-      echo -e "::error file=$attr_file,line=$attr_line_number::Illegal attribute '$attr' in file '$attr_file' at line $attr_line_number.\n$(echo $attr_full_line | xargs)\n"
+      if [[ -z "${CI-}" ]]; then
+        echo -e "Illegal attribute '$attr' in file '$attr_file' at line $attr_line_number.\n$(echo $attr_full_line | xargs)\n"
+      else
+        echo -e "::error file=$attr_file,line=$attr_line_number::Illegal attribute '$attr' in file '$attr_file' at line $attr_line_number.\n$(echo $attr_full_line | xargs)\n"
+      fi
     fi
-  done < <(printf '%b\n' "$trimmed_attrs") 
+  done < <(printf '%b\n' "$trimmed_attrs")
 done < <(printf '%b\n' "$attr_matching")
