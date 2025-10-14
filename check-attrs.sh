@@ -40,9 +40,9 @@ do
       attr_line_number=$(echo "$attr_line" | cut -d ":" -f 2)
       attr_full_line=$(echo "$attr_line" | cut -d ":" -f 3)
       if [[ -z "${CI-}" ]]; then
-        echo -e "Illegal attribute '$attr' in file '$attr_file' at line $attr_line_number.\n$(echo $attr_full_line | xargs)\n"
+        echo -e "Illegal attribute '$attr' in file '$attr_file' at line $attr_line_number.\n$(echo $attr_full_line | awk '{$1=$1};1')\n"
       else
-        echo -e "::error file=$attr_file,line=$attr_line_number::Illegal attribute '$attr' in file '$attr_file' at line $attr_line_number.\n$(echo $attr_full_line | xargs)\n"
+        echo -e "::error file=$attr_file,line=$attr_line_number::Illegal attribute '$attr' in file '$attr_file' at line $attr_line_number.\n$(echo $attr_full_line | awk '{$1=$1};1')\n"
       fi
     fi
   done < <(printf '%b\n' "$trimmed_attrs")
