@@ -23,7 +23,8 @@ attr_matching=$(grep -EHnr \
   --exclude="*.json" \
   --exclude="tsconfig.tsbuildinfo" \
   --exclude="*.svg" \
-  "data-[a-z0-9\-]+" ./*[!.sh] | grep -E -v "data-$team_alias-$project_alias-[a-z0-9\-]+")
+  --exclude="*.sh" \
+  "data-[a-z0-9\-]+" ./* || "" | grep -E -v "data-$team_alias-$project_alias-[a-z0-9\-]+" || "")
 
 contains() {
   [[ " $1 " =~ " $2 " ]] && echo 1 || echo 0
